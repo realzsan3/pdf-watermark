@@ -13,16 +13,16 @@
 <link rel="canonical" href="https://github.com/realzsan3/pdf-watermark/">
 
 <!-- ── Language alternates ────────────────────────────────── -->
-<link rel="alternate" hreflang="en" href="https://pdfwm.111533.xyz/">
-<link rel="alternate" hreflang="zh" href="https://pdfwm.111533.xyz/?lang=zh">
-<link rel="alternate" hreflang="x-default" href="https://pdfwm.111533.xyz/">
+<link rel="alternate" hreflang="en" href="https://pdfwm.111533.xyz/pdf-watermark/">
+<link rel="alternate" hreflang="zh" href="https://pdfwm.111533.xyz/pdf-watermark/?lang=zh">
+<link rel="alternate" hreflang="x-default" href="https://pdfwm.111533.xyz/pdf-watermark/">
 
 <!-- ── Open Graph (Facebook / LinkedIn / general) ─────────── -->
 <meta property="og:type"        content="website">
-<meta property="og:url"         content="https://pdfwm.111533.xyz/">
+<meta property="og:url"         content="https://pdfwm.111533.xyz/pdf-watermark/">
 <meta property="og:title"       content="PDF Watermark Tool — Free, Local, No Upload">
 <meta property="og:description" content="Add tiled text watermarks to any PDF in seconds. 100% client-side — your files never leave your device. Free, offline-ready, bilingual (EN/中文).">
-<meta property="og:image"       content="https://pdfwm.111533.xyz/og-image.png">
+<meta property="og:image"       content="https://pdfwm.111533.xyz/pdf-watermark/og-image.png">
 <meta property="og:image:width"  content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale"      content="en_US">
@@ -33,7 +33,7 @@
 <meta name="twitter:card"        content="summary_large_image">
 <meta name="twitter:title"       content="PDF Watermark Tool — Free, Local, No Upload">
 <meta name="twitter:description" content="Add tiled text watermarks to any PDF. 100% local — no upload, no server, works offline.">
-<meta name="twitter:image"       content="https://pdfwm.111533.xyz/og-image.png">
+<meta name="twitter:image"       content="https://pdfwm.111533.xyz/pdf-watermark/og-image.png">
 
 <!-- ── Favicon ────────────────────────────────────────────── -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%237c6af7'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-size='18' font-family='serif' fill='white'%3EW%3C/text%3E%3C/svg%3E">
@@ -41,10 +41,6 @@
 
 <!-- ── PWA ────────────────────────────────────────────────── -->
 <meta name="theme-color" content="#7c6af7">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="PDF Watermark">
-<link rel="manifest" href="manifest.json">
 
 <!-- ── Performance ────────────────────────────────────────── -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -58,7 +54,7 @@
   "@context": "https://schema.org",
   "@type": "WebApplication",
   "name": "PDF Watermark Tool",
-  "url": "https://pdfwm.111533.xyz/",
+  "url": "https://pdfwm.111533.xyz/pdf-watermark/",
   "description": "Free online PDF watermark tool. Add tiled text watermarks to any PDF locally — no upload, no server required.",
   "applicationCategory": "UtilitiesApplication",
   "operatingSystem": "Any",
@@ -74,14 +70,14 @@
     "Customizable text, size, angle, color, opacity",
     "Real-time PDF preview",
     "Bilingual: English and Chinese",
-    "PWA — installable and offline-ready"
+    "Single HTML file — no installation required"
   ],
   "inLanguage": ["en", "zh"],
   "isAccessibleForFree": true,
   "creator": {
     "@type": "Person",
-    "name": "username",
-    "url": "https://github.com/username"
+    "name": "realzsan3",
+    "url": "https://github.com/realzsan3"
   }
 }
 </script>
@@ -319,19 +315,6 @@ input[type=color]::-webkit-color-swatch{border:none;border-radius:3px}
 .empty .ei{font-size:48px;opacity:.18}
 .empty p{font-size:12px;letter-spacing:.05em}
 
-/* install bar */
-.ibar{
-  display:none;align-items:center;gap:9px;
-  padding:9px 16px;background:var(--adim);
-  border-bottom:1px solid rgba(124,106,247,.25);
-  font-size:11px;color:var(--alight);flex-shrink:0;
-}
-.ibar.show{display:flex}
-.ibar .ib{
-  margin-left:auto;background:var(--accent);color:#fff;border:none;
-  border-radius:5px;padding:5px 12px;font-family:inherit;font-size:11px;cursor:pointer;
-}
-.ibar .id{background:none;border:none;color:var(--muted);padding:4px 6px;cursor:pointer;font-size:13px}
 
 /* ── MOBILE ── */
 @media(max-width:660px){
@@ -364,11 +347,6 @@ input[type=color]::-webkit-color-swatch{border:none;border-radius:3px}
 </head>
 <body>
 
-<div class="ibar" id="ibar">
-  <span id="iMsg"></span>
-  <button class="ib" id="iBtn"></button>
-  <button class="id" id="iDismiss">✕</button>
-</div>
 
 <header>
   <div class="logo">W</div>
@@ -459,10 +437,18 @@ input[type=color]::-webkit-color-swatch{border:none;border-radius:3px}
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <script>
+/* ─── Helpers (hoisted) ─────────────────────────────────────────────────── */
+function g(id){return document.getElementById(id);}
+function fmtSz(b){return b<1024?b+' B':b<1048576?(b/1024).toFixed(1)+' KB':(b/1048576).toFixed(1)+' MB';}
+function setSt(msg,type){const e=g('st');e.textContent=msg;e.className='st show '+(type||'inf');}
+function clearSt(){g('st').classList.remove('show');}
+function showPg(pct,msg){g('pg').classList.add('show');g('pgf').style.width=pct+'%';g('pgl').textContent=msg;}
+function hidePg(){g('pg').classList.remove('show');}
+
 /* ─── i18n ─────────────────────────────────────────────────────────────── */
 const S = {
   en:{
-    title:'PDF Watermark',tag:'Local · No Upload',lang:'中文',
+    title:'PDF Watermark Tool',tag:'Local · No Upload',lang:'中文',
     sFile:'File',dz:'Drop PDF here<br>or click to <b>browse</b>',
     sWm:'Watermark',lTxt:'Watermark Text',wmDef:'CONFIDENTIAL',
     lSz:'Font Size',lAng:'Rotation°',lCol:'Color',lOp:'Opacity',lSp:'Tile Spacing',
@@ -472,7 +458,6 @@ const S = {
     loadErr:e=>`Load failed: ${e}`,updated:'Preview updated ✓',
     proc:p=>`Processing page ${p}…`,gen:'Generating…',done:'Download complete ✓',
     dlErr:e=>`Error: ${e}`,init:'Initialising…',
-    iMsg:'Install for offline use',iBtn:'Install',
   },
   zh:{
     title:'PDF 水印工具',tag:'本地处理 · 不上传',lang:'English',
@@ -485,12 +470,11 @@ const S = {
     loadErr:e=>`加载失败：${e}`,updated:'预览已更新 ✓',
     proc:p=>`处理第 ${p} 页…`,gen:'生成文件…',done:'下载完成 ✓',
     dlErr:e=>`处理失败：${e}`,init:'初始化…',
-    iMsg:'安装以支持离线使用',iBtn:'安装',
   },
 };
 const bl = (navigator.language||'en').toLowerCase();
 let lang = bl.startsWith('zh') ? 'zh' : 'en';
-const t = (k,...a) => { const v=S[lang][k]; return typeof v==='function'?v(...a):v; };
+function t(k,...a){ const v=S[lang][k]; return typeof v==='function'?v(...a):v; }
 
 function applyLang() {
   const L = S[lang];
@@ -513,8 +497,6 @@ function applyLang() {
   g('dlBtn').textContent   = L.dlBtn;
   g('pvLbl').textContent   = L.pvLbl;
   g('empP').textContent    = L.empP;
-  g('iMsg').textContent    = L.iMsg;
-  g('iBtn').textContent    = L.iBtn;
   const f = g('wTxt');
   if(f.value===S.en.wmDef||f.value===S.zh.wmDef) f.value=L.wmDef;
 }
@@ -725,29 +707,8 @@ document.addEventListener('click',e=>{
 function openPanel(){panel.classList.add('open');panelOpen=true;}
 function closePanel(){panel.classList.remove('open');panelOpen=false;}
 
-/* ─── PWA ───────────────────────────────────────────────────────────────── */
-let deferred=null;
-if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
-window.addEventListener('beforeinstallprompt',e=>{
-  e.preventDefault();deferred=e;g('ibar').classList.add('show');
-});
-g('iBtn').addEventListener('click',async()=>{
-  if(!deferred)return;
-  deferred.prompt();
-  const{outcome}=await deferred.userChoice;
-  if(outcome==='accepted')g('ibar').classList.remove('show');
-  deferred=null;
-});
-g('iDismiss').addEventListener('click',()=>g('ibar').classList.remove('show'));
-window.addEventListener('appinstalled',()=>g('ibar').classList.remove('show'));
 
-/* ─── Helpers ───────────────────────────────────────────────────────────── */
-function g(id){return document.getElementById(id);}
-function fmtSz(b){return b<1024?b+' B':b<1048576?(b/1024).toFixed(1)+' KB':(b/1048576).toFixed(1)+' MB';}
-function setSt(msg,type){const e=g('st');e.textContent=msg;e.className='st show '+(type||'inf');}
-function clearSt(){g('st').classList.remove('show');}
-function showPg(pct,msg){g('pg').classList.add('show');g('pgf').style.width=pct+'%';g('pgl').textContent=msg;}
-function hidePg(){g('pg').classList.remove('show');}
+/* ─── Helpers defined at top of script ──────────────────────────────────── */
 
 /* ─── Boot ──────────────────────────────────────────────────────────────── */
 applyLang();
